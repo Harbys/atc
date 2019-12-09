@@ -1,23 +1,23 @@
 # atc
 Python app that changes passwords for you
 
-#KeepassManager methods
+# KeepassManager methods
 
-#KeepassManager(password, dbpath)
+# KeepassManager(password, dbpath)
 password - password to decrypt kdbx database : defaults to asking for password
 dbpath - path to databse : defaults to ~/Passwords.kdbx
 
 
-#find(query)
+# find(query)
 returns first found entry with provided query
 
 
-#edit(query, password)
+# edit(query, password)
 query - title of entry to edit
 password - new password to set in entry
 
 
-#addentry(self, title, username, password, url,  group, notes)
+# addentry(self, title, username, password, url,  group, notes)
 title - title of entry
 username - username to set in entry
 password - password to set in entry
@@ -26,9 +26,9 @@ group - entry group : defaults to Root
 notes - entry notes : defaults to empty
 
 
-#initgh()
+# initgh()
 logs in to GitHub
 
 
-#changeghpassword()
+# changeghpassword()
 changes GitHub password
