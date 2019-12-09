@@ -53,6 +53,8 @@ class KeepassManager:
         self.git.logintogh()
 
     def changeghpassword(self):
+        if self.git == None:
+            self.initgh()
         newpassword = self.createpassword(2)
         if self.git.changepassword(newpassword):
             self.edit('github', newpassword)
