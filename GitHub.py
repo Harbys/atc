@@ -9,6 +9,7 @@ class GitHub:
         self.password = password
         self.session = requests.Session()
         self.topt = topt
+        self.logged_in = False
 
     def logintogh(self):
         ret = self.session.get('https://github.com/login').content.decode('utf-8')
@@ -36,9 +37,22 @@ class GitHub:
 
         else:
             print('logged in')
+        self.logged_in = True
         return ret
 
+    def logout(self):
+        ret = self.session.get('https://github.com/').content.decode('utf-8')
+        ret = bs4.BeautifulSoup(ret, 'html.parser')
+        data = {
+            'utf8': '✓',
+            'authenticity_token': ret.findAll("input", {'name': 'authenticity_token'})[5]['value'],
+        }
+        self.session.post('https://github.com/logout', data=data)
+        self.logged_in = False
+
     def changepassword(self, newpassword):
+        if not self.logged_in:
+            self.logintogh()
         ret = self.session.get('https://github.com/settings/security').content.decode('utf-8')
         ret = bs4.BeautifulSoup(ret, 'html.parser')
         data = {
@@ -55,6 +69,7 @@ class GitHub:
         }
         ret = self.session.post('https://github.com/account/password', data=data)
         if ret.status_code == 200:
+            self.logout()
             return True
         else:
             return False

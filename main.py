@@ -7,5 +7,4 @@ in order for this demo to work y need to have github and github-topt (topt secre
 """
 
 man = KeepassManager.KeepassManager()
-man.initgh()
 man.changeghpassword()

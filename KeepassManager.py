@@ -7,7 +7,7 @@ import GitHub
 
 
 class KeepassManager:
-    def __init__(self, password=getpass4.getpass("Databese Password:"), dbpath=f'{os.getenv("HOME")}/Passwords.kdbx'):
+    def __init__(self, password=getpass4.getpass("Database Password:"), dbpath=f'{os.getenv("HOME")}/Passwords.kdbx'):
         try:
             self.Database = pykeepass.PyKeePass(dbpath, password=password)
             self.defaultgroup = self.Database.root_group
@@ -50,10 +50,10 @@ class KeepassManager:
         gitcreds = self.Database.find_entries(title='github', first=True)
         topt = self.Database.find_entries(title='github-topt', first=True)
         self.git = GitHub.GitHub(gitcreds.username, gitcreds.password, topt.password)
-        self.git.logintogh()
+        del gitcreds, topt
 
     def changeghpassword(self):
-        if self.git == None:
+        if self.git is None:
             self.initgh()
         newpassword = self.createpassword(2)
         if self.git.changepassword(newpassword):
