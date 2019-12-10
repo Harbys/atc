@@ -1,7 +1,7 @@
 # atc
 Python app that changes passwords for you
 
-**KeepassManager methods
+**KeepassManager methods**
 
 **KeepassManager(password, dbpath)**
 password - password to decrypt kdbx database : defaults to asking for password
