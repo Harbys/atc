@@ -26,9 +26,10 @@ group - entry group : defaults to Root
 notes - entry notes : defaults to empty
 
 
-**initgh()**
-logs in to GitHub
-
-
 **changeghpassword()**
-changes GitHub password
+changes GitHub password and updates database
+(for GH to work tfa is required)
+
+
+**changeredditpassword()**
+changes reddit password and updates database

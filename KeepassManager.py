@@ -4,14 +4,18 @@ from pykeepass.exceptions import CredentialsIntegrityError
 import getpass4
 import uuid
 import GitHub
+import FaceBook
+import Reddit
 
 
 class KeepassManager:
     def __init__(self, password=getpass4.getpass("Database Password:"), dbpath=f'{os.getenv("HOME")}/Passwords.kdbx'):
         try:
-            self.Database = pykeepass.PyKeePass(dbpath, password=password)
-            self.defaultgroup = self.Database.root_group
+            self.database = pykeepass.PyKeePass(dbpath, password=password)
+            self.defaultgroup = self.database.root_group
             self.git = None
+            self.fb = None
+            self.reddit = None
         except CredentialsIntegrityError:
             print("Wrong Password")
             exit()
@@ -20,15 +24,15 @@ class KeepassManager:
             exit()
 
     def find(self, query):
-        return self.Database.find_entries(title=query, first=True)
+        return self.database.find_entries(title=query, first=True)
 
     def edit(self, query, password):
-        self.Database.find_entries(title=query, first=True).password = password
-        self.Database.save()
+        self.database.find_entries(title=query, first=True).password = password
+        self.database.save()
 
     def addentry(self, title, username, password, url="",  group='', notes=""):
         if group != "":
-            grouptochange = self.Database.find_groups(name=group, first=True)
+            grouptochange = self.database.find_groups(name=group, first=True)
             if grouptochange is not None:
                 group = grouptochange
             else:
@@ -36,8 +40,8 @@ class KeepassManager:
         else:
             group = self.defaultgroup
 
-        self.Database.add_entry(group, title=title, username=username, password=password, url=url, notes=notes)
-        self.Database.save()
+        self.database.add_entry(group, title=title, username=username, password=password, url=url, notes=notes)
+        self.database.save()
 
     @staticmethod
     def createpassword(security=1):
@@ -47,8 +51,8 @@ class KeepassManager:
         return pastoret
 
     def initgh(self):
-        gitcreds = self.Database.find_entries(title='github', first=True)
-        topt = self.Database.find_entries(title='github-topt', first=True)
+        gitcreds = self.database.find_entries(title='github', first=True)
+        topt = self.database.find_entries(title='github-topt', first=True)
         self.git = GitHub.GitHub(gitcreds.username, gitcreds.password, topt.password)
         del gitcreds, topt
 
@@ -58,6 +62,30 @@ class KeepassManager:
         newpassword = self.createpassword(2)
         if self.git.changepassword(newpassword):
             self.edit('github', newpassword)
+            return True
+        else:
+            return False
+
+    def initfb(self):
+        fbcreds = self.database.find_entries(title='fb', first=True)
+        self.fb = FaceBook.FaceBook(fbcreds.login, fbcreds.password)
+        del fbcreds
+
+    def initreddit(self):
+        redditcreds = self.database.find_entries(title='reddit', first=True)
+        reddittopt = self.database.find_entries(title='reddit-topt', first=True)
+        if reddittopt is not None:
+            self.reddit = Reddit.Reddit(redditcreds.username, redditcreds.password, reddittopt.password)
+        else:
+            self.reddit = Reddit.Reddit(redditcreds.username, redditcreds.password)
+        del reddittopt, redditcreds
+
+    def changeredditpassword(self):
+        if self.reddit is None:
+            self.initreddit()
+        newpassword = self.createpassword(2)
+        if self.reddit.changepassword(newpassword):
+            self.edit('reddit', newpassword)
             return True
         else:
             return False
