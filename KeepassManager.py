@@ -6,6 +6,7 @@ import uuid
 import GitHub
 import FaceBook
 import Reddit
+import SSH
 
 
 class KeepassManager:
@@ -16,6 +17,7 @@ class KeepassManager:
             self.git = None
             self.fb = None
             self.reddit = None
+            self.ssh = None
         except CredentialsIntegrityError:
             print("Wrong Password")
             exit()
@@ -89,3 +91,16 @@ class KeepassManager:
             return True
         else:
             return False
+
+    def initssh(self):
+        sshcreds = self.database.find_entries(title='ssh', first=True)
+        if sshcreds is not None:
+            self.ssh = SSH.SSH(sshcreds.url, sshcreds.username, sshcreds.password, sshcreds.notes)
+        del sshcreds
+
+    def changesshpassword(self, method='SHA512', user=None):
+        if self.ssh is None:
+            self.initssh()
+        newpassword = self.createpassword(2)
+        self.ssh.changepassword(self.ssh.mkhash(newpassword, method), user)
+        self.edit('ssh', newpassword)
