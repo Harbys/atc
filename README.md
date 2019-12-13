@@ -33,3 +33,38 @@ changes GitHub password and updates database
 
 **changeredditpassword()**
 changes reddit password and updates database
+
+
+**changesshpassword(method, user)**
+changes password over ssh
+methods: SHA512, SHA256, MD5 : defaults to SHA512
+user: username whos password will be changed : defaults to username from database
+
+
+
+## KeePassXC Setup
+**for github**
+title github
+username [username]
+password [password]
+
+title github-topt
+password [topt_secret]
+
+
+**for reddit**
+title reddit
+username [username]
+password [password]
+
+_optional (use when using reddit tfa)_
+title reddit-topt
+password [topt_secret]
+
+
+**for password change over ssh**
+title ssh
+username [user_with_root_privileges]
+password [password] _optional if using rsa key_
+url [host]
+notes [path to rsa key] _optional if using password_
