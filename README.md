@@ -17,7 +17,7 @@ query - title of entry to edit
 password - new password to set in entry
 
 
-**addentry(self, title, username, password, url,  group, notes)**
+**add_entry(self, title, username, password, url,  group, notes)**
 title - title of entry
 username - username to set in entry
 password - password to set in entry
@@ -26,16 +26,19 @@ group - entry group : defaults to Root
 notes - entry notes : defaults to empty
 
 
-**changeghpassword()**
+**change_gh_password()**
 changes GitHub password and updates database
 (for GH to work tfa is required)
 
 
-**changeredditpassword()**
+**change_reddit_password()**
 changes reddit password and updates database
 
 
-**changesshpassword(method, user)**
+**change_fb_password()**
+changes FaceBook password
+
+**change_password_over_ssh(method, user)**
 changes password over ssh
 methods: SHA512, SHA256, MD5 : defaults to SHA512
 user: username whos password will be changed : defaults to username from database
@@ -60,6 +63,12 @@ password [password]
 _optional (use when using reddit tfa)_
 title reddit-topt
 password [topt_secret]
+
+
+**for FaceBook**
+title fb
+username [email]
+password [password]
 
 
 **for password change over ssh**

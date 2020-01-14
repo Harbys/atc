@@ -12,17 +12,48 @@ class FaceBook:
             'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
                           'Chrome/73.0.3683.103 Safari/537.36',
         })
+        self.is_logged_in = False
 
-    def logintofb(self):
-        ret = self.session.get('https://www.facebook.com/', headers=self.headers).content.decode('utf-8')
+    def login_to_fb(self):
+        ret = self.session.get('https://m.facebook.com/', headers=self.headers).content.decode('utf-8')
+        ret = bs4.BeautifulSoup(ret, 'html.parser')
+        data = {
+            'lsd': ret.find('input', {'name': 'lsd'})['value'],
+            'jazoest': ret.find('input', {'name': 'jazoest'})['value'],
+            'm_ts': ret.find('input', {'name': 'm_ts'})['value'],
+            'li': ret.find('input', {'name': 'li'})['value'],
+            'try_number': '0',
+            'unrecognized_tries': '0',
+            'email': self.login,
+            'pass': self.password,
+            'login': 'Zaloguj+się'
+        }
+        login_url = 'https://m.facebook.com' + ret.find('form', {'id': 'login_form'})['action']
+        ret = self.session.post(login_url, data=data, headers=self.headers)
+        if ret.status_code == 200:
+            self.is_logged_in = True
+            return True
+        else:
+            self.is_logged_in = False
+            return False
+
+    def change_password(self, new_password):
+        if self.is_logged_in is False:
+            self.login_to_fb()
+        ret = self.session.get('https://m.facebook.com/settings/security/password/',
+                               headers=self.headers).content.decode('utf-8')
         ret = bs4.BeautifulSoup(ret, 'html.parser')
         data = {
             'jazoest': ret.find('input', {'name': 'jazoest'})['value'],
-            'lsd': ret.find('input', {'name': 'lsd'})['value'],
-            'email': self.login,
-            'pass': self.password,
-            'login_source': 'comet_headerless_login',
-            'login': '1'
+            'fb_dtsg': ret.find('input', {'name': 'fb_dtsg'})['value'],
+            'password_change_session_identifier': ret.find('input', {'name': 'password_change_session_identifier'})['value'],
+            'password_old': self.password,
+            'password_new': new_password,
+            'password_confirm': new_password
         }
-        ret = self.session.post('https://www.facebook.com/login/', data=data, headers=self.headers)
-        return ret
+        post_url = 'https://m.facebook.com' + ret.find('form', {'id': 'm-settings-form'})['action']
+        ret = self.session.post(post_url, headers=self.headers, data=data)
+        if ret.status_code == 200:
+            return True
+        else:
+            return False
