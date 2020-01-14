@@ -54,6 +54,20 @@ class FaceBook:
         post_url = 'https://m.facebook.com' + ret.find('form', {'id': 'm-settings-form'})['action']
         ret = self.session.post(post_url, headers=self.headers, data=data)
         if ret.status_code == 200:
+            self.logout()
+            return True
+        else:
+            return False
+
+    def logout(self):
+        if self.is_logged_in is False:
+            return
+        ret = self.session.get('https://m.facebook.com', headers=self.headers).content.decode('utf-8')
+        ret = bs4.BeautifulSoup(ret)
+        logout_url = ret.find('a', {'id': 'mbasic_logout_button'})['href']
+        ret = self.session.get(f'https://m.facebook.com{logout_url}', headers=self.headers)
+        if ret.status_code == 200:
+            self.is_logged_in = False
             return True
         else:
             return False
