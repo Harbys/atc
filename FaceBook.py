@@ -54,7 +54,6 @@ class FaceBook:
         post_url = 'https://m.facebook.com' + ret.find('form', {'id': 'm-settings-form'})['action']
         ret = self.session.post(post_url, headers=self.headers, data=data)
         if ret.status_code == 200:
-            self.logout()
             return True
         else:
             return False

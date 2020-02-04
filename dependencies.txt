@@ -1,0 +1,8 @@
+pyopenssl
+pykeepass
+getpass4
+secrets
+requests
+beautifulsoup4
+paramiko
+daemonize

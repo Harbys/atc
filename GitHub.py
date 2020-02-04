@@ -4,11 +4,11 @@ import pyotp
 
 
 class GitHub:
-    def __init__(self, login, password, topt):
+    def __init__(self, login, password, otp):
         self.login = login
         self.password = password
         self.session = requests.Session()
-        self.topt = topt
+        self.otp = otp
         self.logged_in = False
 
     def logintogh(self):
@@ -27,7 +27,7 @@ class GitHub:
         ret = self.session.post('https://github.com/session', data=data).content.decode('utf-8')
         ret = bs4.BeautifulSoup(ret, 'html.parser')
         if ret.find('meta', {'value': '/sessions/two-factor'}) is not None:
-            otp = pyotp.TOTP(self.topt)
+            otp = pyotp.TOTP(self.otp)
             data = {
                 'utf8': '✓',
                 'authenticity_token': ret.find("input", {'name': 'authenticity_token'})['value'],
@@ -69,7 +69,6 @@ class GitHub:
         }
         ret = self.session.post('https://github.com/account/password', data=data)
         if ret.status_code == 200:
-            self.logout()
             return True
         else:
             return False

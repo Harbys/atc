@@ -16,7 +16,7 @@ class SSH:
             self.ssh_key = f"{os.getenv('HOME')}/.ssh/id_rsa"
 
     @staticmethod
-    def mkhash(password, method='SHA512'):
+    def make_hash(password, method='SHA512'):
         if method == 'SHA512':
             method = crypt.METHOD_SHA512
         elif method == 'SHA256':
@@ -36,7 +36,7 @@ class SSH:
         self.ssh.close()
         self.is_connected = False
 
-    def changepassword(self, password_hash, user=None):
+    def change_password(self, password_hash, user=None):
         if user is None:
             user = self.username
         if not self.is_connected:

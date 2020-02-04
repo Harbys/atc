@@ -2,7 +2,7 @@ import pykeepass
 import os
 from pykeepass.exceptions import CredentialsIntegrityError
 import getpass4
-import uuid
+import secrets
 import GitHub
 import FaceBook
 import Reddit
@@ -10,8 +10,12 @@ import SSH
 
 
 class KeepassManager:
-    def __init__(self, password=getpass4.getpass("Database Password:"), dbpath=f'{os.getenv("HOME")}/Passwords.kdbx'):
+    def __init__(self, password, dbpath):
         try:
+            if password is None:
+                password = getpass4.getpass('Database password:')
+            if dbpath is None:
+                dbpath = f"{os.getenv('HOME')}/Passwords.kdbx"
             self.database = pykeepass.PyKeePass(dbpath, password=password)
             self.default_group = self.database.root_group
             self.git = None
@@ -22,7 +26,7 @@ class KeepassManager:
             print("Wrong Password")
             exit()
         except FileNotFoundError:
-            print(f'No such File: {os.getenv("HOME")}/Passwords.kdbx')
+            print(f'No such File: {dbpath}')
             exit()
 
     def find(self, query):
@@ -47,10 +51,7 @@ class KeepassManager:
 
     @staticmethod
     def create_password(security=1):
-        generated_password = ""
-        for x in range(security):
-            generated_password += uuid.uuid4().hex
-        return generated_password
+        return secrets.token_urlsafe(security*32)
 
     def init_gh(self):
         gitcreds = self.database.find_entries(title='github', first=True)
@@ -115,5 +116,5 @@ class KeepassManager:
         if self.ssh is None:
             self.init_ssh()
         new_password = self.create_password(2)
-        self.ssh.changepassword(self.ssh.mkhash(new_password, method), user)
+        self.ssh.change_password(self.ssh.make_hash(new_password, method), user)
         self.edit('ssh', new_password)
