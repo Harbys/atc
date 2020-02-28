@@ -1,5 +1,5 @@
 {
-  "config-version":"1.0.2",
+  "config-version":"1.0.3",
   "dbpath": null,
   "password": "require_on_start",
   "last_changed": 0,

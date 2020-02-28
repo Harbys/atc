@@ -1,6 +1,19 @@
 # atc
 Python app that changes passwords for you
 
+
+# run the application
+
+
+
+**To run the app use python3 atc.py <start, stop, run>**
+
+start - start daemon
+
+stop - kill daemon
+
+run - run in terminal
+****
 **KeepassManager methods**
 
 **KeepassManager(password, dbpath)**  
@@ -45,7 +58,7 @@ user: username whos password will be changed : defaults to username from databas
 
 
 
-## KeePassXC Setup
+## KeePassXC Setup  
 **for github**  
 title github  
 username [username]  
@@ -71,9 +84,9 @@ username [email]
 password [password]
 
 
-**for password change over ssh**
-title ssh
-username [user_with_root_privileges]
-password [password] _optional if using rsa key_
-url [host]
+**for password change over ssh**  
+title ssh  
+username [user_with_root_privileges]  
+password [password] _optional if not using rsa key_  
+url [host]  
 notes [path to rsa key] _optional if using password_
