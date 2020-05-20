@@ -22,7 +22,7 @@ dbpath - path to databse : defaults to ~/Passwords.kdbx
 
 
 **find(query)**  
-returns first found entry with provided query  
+returns first found entry for provided query  
 
 
 **edit(query, password)**  
